@@ -4,30 +4,30 @@ import { type User, UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
-    constructor(private usersService: UsersService) {}
+    constructor(private usersService: UsersService) { }
 
     @Get()
-    getUsers(): User[] {
-        return this.usersService.getUsers();
+    getUsers() {
+        return this.usersService.findAll();
     }
 
     @Get(":id")
-    getUser(@Param("id") id: number): User | string {
-        return this.usersService.getUser(id);
+    getUser(@Param("id") id: number) {
+        return this.usersService.findOne(id);
     }
 
     @Post()
-    createUser(@Body() newUser: User): User {
-        return this.usersService.createUser(newUser);
+    createUser(@Body() newUser: User) {
+        return this.usersService.create(newUser);
     }
 
     @Delete(":id")
-    deleteUser(@Param("id") id: number): object {
-        return this.usersService.deleteUser(id);
+    deleteUser(@Param("id") id: number) {
+        return this.usersService.delete(id);
     }
 
     @Patch(":id")
-    updateUser(@Param("id") id: number, @Body() updatedUser: User ): User {
-        return this.usersService.updateUser(id, updatedUser);
+    updateUser(@Param("id") id: number, @Body() updatedUser: User) {
+        return this.usersService.update(id, updatedUser);
     }
 }
