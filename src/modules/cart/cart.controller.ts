@@ -10,16 +10,13 @@ import {
 
 import { CartService } from './cart.service';
 import { AddCartItemDto } from './dto/add-cart-item.dto';
-import { CartRepository } from './repositories/cart.repository';
-import { CartItemRepository } from './repositories/cart-item.repository';
+import { UpdateItemDto } from './dto/update-cart-item.dto';
 
-@Controller('cart')
+@Controller('user/cart')
 export class CartController {
 
     constructor(
         private readonly cartService: CartService,
-        private cartItemRepository: CartItemRepository,
-    
     ) { }
 
     @Get(':userId')
@@ -37,22 +34,25 @@ export class CartController {
         return this.cartService.addItem(Number(userId), adddCartItemDto);
     }
 
-    @Patch('items/:itemId')
+    @Patch(':userId/items/:itemId')
     updateItem(
+        @Param('userId') userId: string,
         @Param('itemId') itemId: string,
-        @Body('quantity') quantity: number
+        @Body() updateItemDto: UpdateItemDto
     ) {
-        return this.cartItemRepository.updateItem(
+        return this.cartService.updateItem(
+            Number(userId),
             Number(itemId),
-            quantity
+            updateItemDto.quantity
         );
     }
 
-    @Delete('items/:itemId')
+    @Delete(':userId/items/:itemId')
     removeItem(
+        @Param('userId') userId: string,
         @Param('itemId') itemId: string
     ) {
-        return this.cartItemRepository.delete(Number(itemId));
+        return this.cartService.removeItem(Number(userId), Number(itemId));
     }
 
 }

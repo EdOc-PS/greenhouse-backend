@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { CartRepository } from "./repositories/cart.repository";
 import { CartItemRepository } from "./repositories/cart-item.repository";
 import { AddCartItemDto } from "./dto/add-cart-item.dto";
@@ -32,11 +32,8 @@ export class CartService {
 
         const cart = await this.getOrCreateCart(userId);
 
-        //validar se o produto existe e se tem estoque suficiente
+        //validar se o produto existe
         const product = await this.productService.validateProduct(cartItemDto.productId);
-
-        //validar se a quantidade solicitada é menor ou igual ao estoque disponível
-        this.productService.validateStock(product.stock, cartItemDto.quantity);
 
         const existingItem = await this.cartItemRepository.findItem(
             cart.id,
@@ -44,11 +41,19 @@ export class CartService {
         );
 
         if (existingItem) {
+            const finalQuantity = existingItem.quantity + cartItemDto.quantity;
+
+            //validar estoque com a quantidade final (já existente + nova)
+            this.productService.validateStock(product.stock, finalQuantity);
+
             return this.cartItemRepository.updateItem(
                 existingItem.id,
-                existingItem.quantity + cartItemDto.quantity
+                finalQuantity
             );
         }
+
+        //validar estoque para item novo
+        this.productService.validateStock(product.stock, cartItemDto.quantity);
 
         return this.cartItemRepository.create(
             cart.id,
@@ -76,6 +81,45 @@ export class CartService {
                 price: item.product.price
             }))
         };
+    }
+
+    private async getItemByIdOrFail(itemId: number) {
+        const item = await this.cartItemRepository.findById(itemId);
+
+        if (!item) {
+            throw new NotFoundException('Item do carrinho não encontrado');
+        }
+
+        return item;
+    }
+
+    private assertItemBelongsToUser(itemUserId: number, userId: number) {
+        if (itemUserId !== userId) {
+            throw new ForbiddenException('Item do carrinho não pertence a este usuário');
+        }
+    }
+
+    async updateItem(userId: number, itemId: number, quantity: number) {
+
+        await this.userSerivce.findByIdOrFail(userId);
+
+        const item = await this.getItemByIdOrFail(itemId);
+        this.assertItemBelongsToUser(item.cart.userId, userId);
+
+        const product = await this.productService.validateProduct(item.productId);
+        this.productService.validateStock(product.stock, quantity);
+
+        return this.cartItemRepository.updateItem(itemId, quantity);
+    }
+
+    async removeItem(userId: number, itemId: number) {
+
+        await this.userSerivce.findByIdOrFail(userId);
+
+        const item = await this.getItemByIdOrFail(itemId);
+        this.assertItemBelongsToUser(item.cart.userId, userId);
+
+        return this.cartItemRepository.delete(itemId);
     }
 
 

@@ -15,6 +15,15 @@ export class CartItemRepository {
     });
   }
 
+  findById(id: number) {
+    return this.prisma.cartItem.findUnique({
+      where: { id },
+      include: {
+        cart: true
+      }
+    });
+  }
+
   create(cartId: number, productId: number, quantity: number) {
     return this.prisma.cartItem.create({
       data: {
