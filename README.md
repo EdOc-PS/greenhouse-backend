@@ -1,4 +1,4 @@
-# GreenMarket Backend
+# Greenhouse Backend
 
 <p align="center">
   <strong>API REST para gerenciamento de e-commerce de produtos verdes</strong>
@@ -16,7 +16,7 @@
 
 ## 📋 Sobre o Projeto
 
-O **GreenMarket Backend** é uma API REST desenvolvida com **NestJS** para gerenciar uma plataforma de e-commerce especializada em produtos sustentáveis e orgânicos. A aplicação fornece funcionalidades completas para autenticação, gerenciamento de usuários, catálogo de produtos, carrinho de compras e processamento de pedidos.
+O **Greenhouse Backend** é uma API REST desenvolvida com **NestJS** para gerenciar uma plataforma de e-commerce especializada em produtos sustentáveis e orgânicos. A aplicação fornece funcionalidades completas para autenticação, gerenciamento de usuários, catálogo de produtos, carrinho de compras e processamento de pedidos.
 
 ---
 
@@ -106,8 +106,8 @@ Antes de iniciar, certifique-se de ter instalado:
 ### 1️⃣ Clonar o Repositório
 
 ```bash
-git clone https://github.com/seu-usuario/greenmarket-backend.git
-cd greenmarket-backend
+git clone https://github.com/seu-usuario/greenhouse-backend.git
+cd greenhouse-backend
 ```
 
 ### 2️⃣ Instalar Dependências
