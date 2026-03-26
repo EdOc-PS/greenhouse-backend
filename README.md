@@ -134,6 +134,8 @@ Isso iniciará um container PostgreSQL com as seguintes credenciais:
 
 ```bash
 npx prisma migrate dev
+
+npx prisma generate
 ```
 
 #### (Opcional) Visualizar Dados com Prisma Studio:
